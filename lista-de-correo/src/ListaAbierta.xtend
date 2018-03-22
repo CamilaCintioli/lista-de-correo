@@ -11,6 +11,9 @@ class ListaAbierta {
 	}
 }
 
+/**
+ * Representa a un usuario de la lista de correo. 
+ */
 class Usuario {
 	
 }
