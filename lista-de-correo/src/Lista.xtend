@@ -1,9 +1,12 @@
 import org.eclipse.xtend.lib.annotations.Accessors
+import java.util.List
 
 @Accessors
 class Lista {
 	var FormaSuscripcion formaSuscripcion = new Abierta
-	val suscriptores = newArrayList
+	var FormaEnvio formaEnvio = new Libre
+	var GMailSender mailSender 
+	val List<Usuario> suscriptores = newArrayList
 	
 	def suscribir(Usuario usuario) {
 		formaSuscripcion.suscribir(this, usuario)
@@ -17,6 +20,17 @@ class Lista {
 		formaSuscripcion.tienePendienteAl(usuario)
 	}
 	
+	def enviar(Mail mail) {
+		formaEnvio.enviar(this, mail)
+	}
+	
+	def enviarMailASuscriptores(Mail mail) {
+		suscriptores
+			.filter[usuario | usuario != mail.remitente]
+			.forEach[usuario | 
+				mailSender.sendMail(usuario.mail, mail.asunto, mail.mensaje)
+			]
+	}
 }
 
 interface FormaSuscripcion {
@@ -52,6 +66,7 @@ class Cerrada implements FormaSuscripcion {
 /**
  * Representa a un usuario de la lista de correo. 
  */
+ @Accessors
 class Usuario {
-	
+	String mail	
 }
